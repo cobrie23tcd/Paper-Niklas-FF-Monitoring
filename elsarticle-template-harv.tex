@@ -55,7 +55,7 @@
 \begin{document}
 \begin{frontmatter}
 
-\title{Extending Lean to Non-Manufacturing Workflows in Semiconductor Supply Chains}
+\title{extending Lean to Non-Manufacturing Workflows in Semiconductor Supply Chains}
 
 \author[label1,label2,label3]{Niklas Lauter}
     \address[label1]{Dept.\ of Production Management, University of Economics, 1020 Vienna, Austria\\
@@ -478,7 +478,36 @@ Interpreted through the intervention-based-research lens established in Section~
 
 
 \section{From BPMN Models to a Queryable Semantic Layer}
-XX
+5.1 Ontology Design and Construction
+To extend the analysis of the BPMN-based process models described earlier, two of the unit processes examined in this study — the New Hiring (NH) contract request and the Certificate of Employment (CoE) request — were formalized as OWL ontologies. Both processes are executed by the same organizational role (Student Admin 1) and were therefore selected as an initial example for semantic formalization within the LCFM framework.
+The ontology layer serves three purposes. First, it establishes a shared vocabulary across the four LCFM partners: Human, Machine, Material, and Method. Second, it provides a machine-readable model between every observed task duration and its corresponding BPMN element, directly encoding the raw process time (RPT) of each unit process. Third, it supports cross-case comparability between the NH and CoE workflows under a unified semantic framework, facilitating Operating Curve benchmarking across processes.
+The models were built in Protégé using Turtle syntax and adhere to the OWL 2 framework [1]. Core BPMN 2.0 elements were declared as named OWL classes: UserTask, StartEvent, IntermediateEvent, EndEvent, SequenceFlow, Role, and DataStores. All object-property domains and ranges were explicitly restricted to enforce semantic consistency.
+Each process step and sub-step is instantiated as a named individual carrying the following assertions: triggeredBy, hasSequenceFlow, hasSubProcess, isPerformedBy, and usesDataStore as object properties. Empirically measured task durations, originally recorded in MM:SS format, are attached to each individual via the hasDurationMinutes datatype property. Both ontologies are publicly available via Zenodo [2], with interactive visualizations and full source files accessible via the links provided in the figure captions below.
+
+5.2 Ontology Visualization 
+ 
+Figure 1 – New Hiring Ontology in WebVOWL
+Figure 1 shows the WebVOWL [3] visualization of the New Hiring ontology. Nodes represent OWL classes — including UserTask, StartEvent, IntermediateEvent, EndEvent, SequenceFlow, Role, and DataStores — along with their named subclasses corresponding to process steps 100 through 700 and sub-steps 201 through 502. Directed edges represent object properties such as triggeredBy, hasSequenceFlow, hasSubProcess, isPerformedBy, and usesDataStore, as well as the datatype property hasDurationMinutes, which carries the empirically measured RPT of each step in decimal minutes. Interactive visualization: https://service.tib.eu/webvowl/#iri=https://raw.githubusercontent.com/cobrie23tcd/OWL-Ontology-of-Unit-Processes-/main/NewContractsOntology.ttl
+
+ 
+Figure 2 – Certificate of Employment Ontology in WebVOWL
+Figure 2 presents the equivalent visualization for the Certificate of Employment ontology. The same node and edge conventions apply as in Figure 1. Interactive visualization: https://service.tib.eu/webvowl/#iri=https://raw.githubusercontent.com/cobrie23tcd/OWL-Ontology-of-Unit-Processes-/main/CertificatesOfEmploymentOntology.ttl. 
+Full source files: https://github.com/cobrie23tcd/OWL-Ontology-of-Unit-Processes-
+
+5.3 SPARQL for Data Querying
+SPARQL (SPARQL Protocol and RDF Query Language) [4] is the W3C-standardized query language for RDF-based knowledge graphs and enables structured retrieval of typed data from an ontology without requiring manual extraction. SPARQL queries can retrieve, for example, the cumulative RPT of all sub-tasks within a composite step, the data stores accessed by a given role, or the full precedence chain between two events. This capacity to extract structured data on demand distinguishes a semantic knowledge graph from a conventional BPMN model and enables the ontology to function as an analytical instrument.
+To execute the queries presented below, each ontology was loaded into Apache Jena Fuseki [5], an open-source SPARQL server. Fuseki allows one or more named graphs — in this case, unit process ontologies — to be hosted simultaneously within a single dataset. 
+This architecture is scalable: as additional unit process ontologies are populated with RPT and cycle time data and loaded into the same Fuseki dataset, the query interface provides process data retrieval across all unit processes, forming the foundation for a unified non-manufacturing knowledge graph. 
+The examples below illustrate query patterns applied to the loaded datasets:
+SPARQL Example 1
+
+SPARQL Example 2
+
+SPARQL Example 3
+
+SPARQL Example 4
+
+
 
 \section{Conclusion and Future Work}\label{sec:Conclusion and Future Work}
 
